@@ -535,3 +535,5 @@ if __name__ == '__main__':
     print(f"💰 ЗА ПРАВИЛЬНЫЙ ОТВЕТ ДАЁТСЯ 100 МОНЕТ")
     print("=" * 50)
     app.run(debug=True)
+else:
+    pass
