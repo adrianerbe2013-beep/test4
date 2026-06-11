@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Результат</title>
+    <style>
+        body { background: linear-gradient(135deg, #667eea, #764ba2); font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { background: rgba(0,0,0,0.7); padding: 40px; border-radius: 30px; text-align: center; max-width: 600px; width: 100%; }
+        .emoji { font-size: 80px; }
+        h1 { font-size: 36px; margin: 20px 0; color: gold; }
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin: 30px 0; }
+        .stat-card { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; }
+        .stat-label { font-size: 12px; color: rgba(255,255,255,0.7); }
+        .stat-value { font-size: 28px; font-weight: bold; color: gold; }
+        .prize { font-size: 32px; color: gold; font-weight: bold; }
+        .prizes-list { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 15px; margin: 20px 0; text-align: left; max-height: 150px; overflow-y: auto; }
+        .prizes-list h4 { color: gold; margin-bottom: 10px; }
+        .prizes-list ul { margin-left: 20px; color: white; }
+        .buttons { display: flex; gap: 20px; justify-content: center; margin-top: 30px; }
+        .btn { padding: 12px 25px; border-radius: 30px; text-decoration: none; font-weight: bold; }
+        .restart { background: #4CAF50; color: white; }
+        .menu { background: #2196F3; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emoji">{% if score == total %}🏆{% elif score >= 10 %}🎉{% elif score >= 5 %}👍{% else %}😢{% endif %}</div>
+        <h1>{{ message }}</h1>
+
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-label">✅ Правильно</div><div class="stat-value">{{ stats.correct }}</div></div>
+            <div class="stat-card"><div class="stat-label">❌ Неправильно</div><div class="stat-value">{{ stats.wrong }}</div></div>
+            <div class="stat-card"><div class="stat-label">🎯 Точность</div><div class="stat-value">{{ accuracy }}%</div></div>
+            <div class="stat-card"><div class="stat-label">💡 Подсказок</div><div class="stat-value">{{ stats.hints_used }}</div></div>
+            <div class="stat-card"><div class="stat-label">❤️ Жизней осталось</div><div class="stat-value">{{ lives }}</div></div>
+            <div class="stat-card"><div class="stat-label">📊 Всего вопросов</div><div class="stat-value">{{ total }}</div></div>
+        </div>
+
+        <div class="prize">💰 {{ prize }} 💰</div>
+
+        {% if stats.prizes_collected %}
+        <div class="prizes-list">
+            <h4>🎁 Полученные призы:</h4>
+            <ul>
+                {% for prize in stats.prizes_collected %}
+                <li>{{ prize }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="buttons">
+            <a href="/game" class="btn restart">🔄 Играть снова</a>
+            <a href="/" class="btn menu">🏠 Главная</a>
+        </div>
+    </div>
+</body>
+</html>

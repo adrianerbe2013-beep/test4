@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход - Кто хочет стать миллионером?</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(0,0,0,0.8);
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        .crown { font-size: 60px; margin-bottom: 20px; }
+        h1 { color: gold; font-size: 32px; margin-bottom: 30px; }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            background: rgba(255,255,255,0.9);
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: gold;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .error {
+            background: #f44336;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .link {
+            color: white;
+            margin-top: 20px;
+            display: block;
+        }
+        .link a { color: gold; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="crown">👑</div>
+        <h1>ВХОД В ИГРУ</h1>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form method="post">
+            <input type="text" name="username" placeholder="👤 Логин" required>
+            <input type="password" name="password" placeholder="🔒 Пароль" required>
+            <button type="submit">🚀 ВОЙТИ</button>
+        </form>
+
+        <div class="link">
+            Нет аккаунта? <a href="/register">Зарегистрироваться</a>
+        </div>
+        <div class="link">
+            <small>Тестовый вход: admin / admin123</small>
+        </div>
+    </div>
+</body>
+</html>

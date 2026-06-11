@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Админ-панель</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            background: rgba(0,0,0,0.7);
+            padding: 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        .section {
+            background: rgba(0,0,0,0.7);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .section h2 { color: gold; margin-bottom: 20px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        th { color: gold; }
+        .btn {
+            padding: 5px 15px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+        }
+        .btn-danger { background: #f44336; color: white; }
+        .btn-warning { background: #FF9800; color: white; }
+        .btn-success { background: #4CAF50; color: white; }
+        .btn-info { background: #2196F3; color: white; }
+        input, select, textarea {
+            padding: 8px;
+            border-radius: 10px;
+            border: none;
+            margin: 5px;
+        }
+        .form-group {
+            display: inline-block;
+            margin: 5px;
+        }
+        .add-form {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 15px;
+        }
+        .role-badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+        .role-admin { background: #f44336; }
+        .role-user { background: #4CAF50; }
+        .exit { color: white; text-decoration: none; background: #f44336; padding: 10px 20px; border-radius: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👑 АДМИН-ПАНЕЛЬ</h1>
+            <div>
+                <span style="margin-right: 15px;">👤 {{ username }}</span>
+                <a href="/" class="exit">🏠 На главную</a>
+            </div>
+        </div>
+
+        <!-- Управление пользователями -->
+        <div class="section">
+            <h2>👥 УПРАВЛЕНИЕ ПОЛЬЗОВАТЕЛЯМИ</h2>
+
+            <table>
+                <tr>
+                    <th>Логин</th>
+                    <th>Роль</th>
+                    <th>Действия</th>
+                </tr>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>
+                        <span class="role-badge {% if user.role == 'admin' %}role-admin{% else %}role-user{% endif %}">
+                            {{ user.role }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if user.username != 'admin' %}
+                            <a href="/admin/delete-user/{{ user.username }}" class="btn btn-danger" onclick="return confirm('Удалить пользователя?')">🗑️ Удалить</a>
+                            {% if user.role == 'user' %}
+                                <a href="/admin/change-role/{{ user.username }}/admin" class="btn btn-warning">👑 Сделать админом</a>
+                            {% else %}
+                                <a href="/admin/change-role/{{ user.username }}/user" class="btn btn-info">📝 Сделать пользователем</a>
+                            {% endif %}
+                        {% else %}
+                            <span style="color: gray;">⭐ Главный админ</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <div class="add-form">
+                <h3>➕ Добавить пользователя</h3>
+                <form method="post" action="/admin/add-user">
+                    <input type="text" name="username" placeholder="Логин" required>
+                    <input type="password" name="password" placeholder="Пароль" required>
+                    <select name="role">
+                        <option value="user">Пользователь</option>
+                        <option value="admin">Администратор</option>
+                    </select>
+                    <button type="submit" class="btn btn-success">➕ Добавить</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Управление вопросами -->
+        <div class="section">
+            <h2>📝 УПРАВЛЕНИЕ ВОПРОСАМИ ({{ questions|length }} вопросов)</h2>
+
+            <div class="add-form">
+                <h3>➕ Добавить новый вопрос</h3>
+                <form method="post" action="/admin/add-question">
+                    <input type="text" name="question" placeholder="Вопрос" size="40" required>
+                    <input type="text" name="options" placeholder="Варианты (через запятую)" size="40" required>
+                    <input type="text" name="answer" placeholder="Правильный ответ" required>
+                    <input type="text" name="theme" placeholder="Тема" required>
+                    <select name="difficulty">
+                        <option value="Легкий">Легкий</option>
+                        <option value="Средний">Средний</option>
+                        <option value="Сложный">Сложный</option>
+                    </select>
+                    <button type="submit" class="btn btn-success">➕ Добавить</button>
+                </form>
+            </div>
+
+            <table style="margin-top: 20px;">
+                <tr>
+                    <th>#</th>
+                    <th>Вопрос</th>
+                    <th>Варианты</th>
+                    <th>Ответ</th>
+                    <th>Тема</th>
+                    <th>Действия</th>
+                </tr>
+                {% for q in questions %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ q.question[:50] }}{% if q.question|length > 50 %}...{% endif %}</td>
+                    <td>{{ q.options|join(', ') }}</td>
+                    <td style="color: #4CAF50;">{{ q.answer }}</td>
+                    <td>{{ q.theme }}</td>
+                    <td>
+                        <a href="/admin/delete-question/{{ loop.index0 }}" class="btn btn-danger" onclick="return confirm('Удалить вопрос?')">🗑️</a>
+                        <button class="btn btn-warning" onclick="editQuestion({{ loop.index0 }}, '{{ q.question|replace("'", "\\'") }}', '{{ q.options|join(",") }}', '{{ q.answer }}', '{{ q.theme }}', '{{ q.difficulty }}')">✏️</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function editQuestion(index, question, options, answer, theme, difficulty) {
+            const newQuestion = prompt("Новый вопрос:", question);
+            if (newQuestion) {
+                const newOptions = prompt("Новые варианты (через запятую):", options);
+                const newAnswer = prompt("Новый правильный ответ:", answer);
+                const newTheme = prompt("Новая тема:", theme);
+                const newDifficulty = prompt("Сложность (Легкий/Средний/Сложный):", difficulty);
+
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/edit-question/${index}`;
+                form.innerHTML = `
+                    <input type="hidden" name="question" value="${newQuestion}">
+                    <input type="hidden" name="options" value="${newOptions}">
+                    <input type="hidden" name="answer" value="${newAnswer}">
+                    <input type="hidden" name="theme" value="${newTheme}">
+                    <input type="hidden" name="difficulty" value="${newDifficulty}">
+                `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+</body>
+</html>

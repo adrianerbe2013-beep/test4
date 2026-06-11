@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Магазин подсказок</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .header {
+            background: rgba(0,0,0,0.7);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        .balance {
+            background: gold;
+            color: black;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .item {
+            background: rgba(0,0,0,0.7);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .item:hover { transform: scale(1.02); }
+        .item-name { font-size: 28px; margin-bottom: 10px; }
+        .item-desc { color: gray; margin-bottom: 15px; }
+        .item-price {
+            font-size: 24px;
+            color: gold;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        .buy-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .buy-btn:disabled {
+            background: gray;
+            cursor: not-allowed;
+        }
+        .buy-btn:hover:not(:disabled) { background: #45a049; }
+        .hint-count {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            color: white;
+            animation: fadeOut 3s forwards;
+        }
+        .message.success { background: #4CAF50; }
+        .message.error { background: #f44336; }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; display: none; }
+        }
+        .back-btn {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span>🛒 МАГАЗИН ПОДСКАЗОК</span>
+            <span>👤 {{ username }}</span>
+            <div class="balance">💰 {{ balance }} монет</div>
+        </div>
+
+        <div class="items">
+            {% for id, item in shop_items.items() %}
+            <div class="item">
+                <div class="item-name">{{ item.name }}</div>
+                <div class="item-desc">{{ item.description }}</div>
+                <div class="item-price">{{ item.price }} монет</div>
+                {% if hints[id] is defined %}
+                <div class="hint-count">📦 У вас: {{ hints[id] }} шт.</div>
+                {% endif %}
+                <button class="buy-btn" onclick="buyItem('{{ id }}', {{ item.price }})">📦 КУПИТЬ</button>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div style="text-align: center;">
+            <a href="/" class="back-btn">← НА ГЛАВНУЮ</a>
+        </div>
+    </div>
+
+    <div id="message"></div>
+
+    <script>
+        function buyItem(itemId, price) {
+            fetch('/buy-item', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'item_id=' + itemId
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showMessage('✅ ' + data.message, 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showMessage('❌ ' + data.message, 'error');
+                }
+            });
+        }
+
+        function showMessage(msg, type) {
+            const msgDiv = document.getElementById('message');
+            msgDiv.innerHTML = `<div class="message ${type}">${msg}</div>`;
+            setTimeout(() => {
+                msgDiv.innerHTML = '';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

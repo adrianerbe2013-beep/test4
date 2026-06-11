@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Лидерборд</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .header {
+            background: rgba(0,0,0,0.7);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+        .main {
+            background: rgba(0,0,0,0.7);
+            border-radius: 30px;
+            padding: 30px;
+        }
+        h1 { color: gold; text-align: center; margin-bottom: 30px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+        th { color: gold; font-size: 18px; }
+        .top-1 { color: gold; font-weight: bold; }
+        .top-2 { color: silver; }
+        .top-3 { color: #cd7f32; }
+        .user-best {
+            background: rgba(255,215,0,0.2);
+            border: 1px solid gold;
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .back-btn {
+            display: inline-block;
+            background: #2196F3;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+        .empty {
+            text-align: center;
+            padding: 30px;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span>🏆 ЛИДЕРБОРД 🏆</span>
+            <span>👤 {{ username }}</span>
+        </div>
+
+        <div class="main">
+            <h1>Лучшие игроки</h1>
+
+            <table>
+                <thead>
+                    <tr><th>#</th><th>Игрок</th><th>Счёт</th><th>Выигрыш</th><th>Дата</th></tr>
+                </thead>
+                <tbody>
+                    {% for record in leaderboard %}
+                    <tr class="{% if loop.index == 1 %}top-1{% elif loop.index == 2 %}top-2{% elif loop.index == 3 %}top-3{% endif %}">
+                        <td>
+                            {% if loop.index == 1 %}🥇
+                            {% elif loop.index == 2 %}🥈
+                            {% elif loop.index == 3 %}🥉
+                            {% else %}{{ loop.index }}{% endif %}
+                        </td>
+                        <td>{{ record.username }}</td>
+                        <td>{{ record.score }}/25</td>
+                        <td>{{ record.prize }}</td>
+                        <td>{{ record.date }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="5" class="empty">😢 Нет результатов. Сыграйте первую игру!</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% if user_best %}
+            <div class="user-best">
+                🎯 <strong>ВАШ ЛУЧШИЙ РЕЗУЛЬТАТ:</strong> {{ user_best.score }}/25 — {{ user_best.prize }}<br>
+                <small>{{ user_best.date }}</small>
+            </div>
+            {% endif %}
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="/" class="back-btn">← НА ГЛАВНУЮ</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вопрос {{ num }} из {{ total }}</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .top-bar {
+            background: rgba(0,0,0,0.5);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .lives { font-size: 24px; }
+        .score { background: rgba(0,0,0,0.5); padding: 8px 20px; border-radius: 30px; }
+        .score-value { color: gold; font-size: 24px; font-weight: bold; }
+        .balance { background: gold; color: black; padding: 8px 20px; border-radius: 30px; font-weight: bold; }
+        .question-card {
+            background: rgba(0,0,0,0.6);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .question-text { color: white; font-size: 26px; }
+        .options {
+            display: grid;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        .option-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border: none;
+            padding: 15px;
+            border-radius: 20px;
+            font-size: 18px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option-btn:hover { transform: scale(1.02); }
+        .opt-letter {
+            background: rgba(255,255,255,0.2);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+        }
+        .hints {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+        .hint-btn {
+            background: #FF9800;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .exit {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .exit a {
+            color: white;
+            background: #f44336;
+            padding: 10px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+        }
+        .error {
+            background: #f44336;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+        }
+        .safe-badge {
+            background: #4CAF50;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <div class="lives">
+                {% for i in range(lives) %}❤️{% endfor %}
+                {% for i in range(3 - lives) %}🖤{% endfor %}
+            </div>
+            <div class="score">💰 Счёт: <span class="score-value">{{ score }}</span></div>
+            <div class="balance">💰 {{ balance }} монет</div>
+            <div>❓ {{ num }}/{{ total }} {% if safe_sum > 0 %}<span class="safe-badge">💰 Несгораемая: {{ safe_sum }}₽</span>{% endif %}</div>
+        </div>
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <div class="question-card">
+            <div class="question-text">{{ q.question }}</div>
+            <div style="font-size: 12px; color: gray; margin-top: 10px;">📚 {{ q.theme }}</div>
+        </div>
+
+        <form method="post">
+            <div class="options">
+                {% for opt in options %}
+                <button type="submit" name="answer" value="{{ opt }}" class="option-btn">
+                    <span class="opt-letter">{{ ['А', 'Б', 'В', 'Г'][loop.index0] }}</span>
+                    <span>{{ opt }}</span>
+                </button>
+                {% endfor %}
+            </div>
+
+            <div class="hints">
+                <button type="submit" name="fifty_fifty" value="1" class="hint-btn">🎯 50/50 ({{ hints.fifty }})</button>
+                <button type="submit" name="remove_one" value="1" class="hint-btn">🗑️ Убрать один ({{ hints.remove_one }})</button>
+            </div>
+        </form>
+
+        <div class="exit"><a href="/">🚪 Выйти</a></div>
+    </div>
+</body>
+</html>
